@@ -1,0 +1,21 @@
+.email-container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  
+  .bottom-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .arrow-container {
+      img {
+        border-radius: 50%;
+        padding: 8px 5px;
+        background-color: var(--blue);
+        &.disabled {
+          opacity: 0.5;
+        }
+      }
+    }
+  }
+}

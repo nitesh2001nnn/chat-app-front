@@ -1,0 +1,17 @@
+.first-panel-container {
+  padding: 8px 16px;
+  background-color: var(--grey-100);
+  border-radius: 0px 12px 12px 0px;
+  height: 100%;
+  width: 70px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  .element-icon {
+    padding: 4px 10px;
+    text-align: center;
+    background-color: var(--blue);
+    border-radius: 8px;
+  }
+}

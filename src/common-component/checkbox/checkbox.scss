@@ -1,0 +1,35 @@
+.checkbox-container {
+  display: flex;
+  gap: 5px;
+  .checkbox-value {
+    width: 30px;
+    height: 25px;
+    border: 2px solid #555;
+    border-radius: 4px;
+    position: relative;
+    cursor: pointer;
+
+    &::after {
+      content: "";
+      width: 6px;
+      height: 16px;
+
+      border-right: 2px solid #fff;
+      border-bottom: 2px solid #fff;
+      position: absolute;
+      left: 12px;
+      top: 3px;
+
+      transform: rotate(45deg);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    &.active {
+      background-color: var(--blue);
+      border-color: var(-grey-30);
+      &::after {
+        opacity: 1;
+      }
+    }
+  }
+}

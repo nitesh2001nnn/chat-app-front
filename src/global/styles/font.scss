@@ -1,0 +1,141 @@
+.heading {
+  font-family: "Kanit", sans-serif;
+  font-weight: 800;
+  font-style: normal;
+  font-size: 5.8rem;
+  color: var(--white);
+  line-height: 4.5rem;
+}
+
+.sub-heading {
+  color: var(--grey-40);
+  font-family: "Barlow", serif;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 0.9rem;
+}
+
+.heading-medium {
+  font-family: "Roboto Slab", serif;
+
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+  font-size: 1.3rem;
+}
+
+.text-body-normal {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 300;
+  text-transform: none;
+  font-size: 1.45rem;
+  letter-spacing: -0.07px;
+  line-height: 1.4285714285714286;
+}
+
+.text-body-xs {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 500;
+  text-transform: none;
+  font-size: 0.875rem;
+  letter-spacing: -0.07px;
+  line-height: 1.4285714285714286;
+}
+
+.text-body-xxs {
+  font-family: "Kanit", sans-serif;
+
+  font-style: normal;
+  letter-spacing: 2px;
+  text-transform: none;
+  font-size: 0.85rem;
+  font-weight: 400;
+  line-height: 1.0285714285714286;
+}
+
+.bold-text {
+  font-family: "Kanit", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 4rem;
+  line-height: 2.5rem;
+}
+
+.bold-text-medium {
+  font-family: "Kanit", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 1.4rem;
+  line-height: 1.1285714285714286;
+  text-transform: none;
+  &-xs {
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.0285714285714286;
+  }
+  &-xxs {
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.0285714285714286;
+  }
+  &-xxxs {
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.0285714285714286;
+  }
+}
+
+.bold-text-small {
+  font-family: "Kanit", sans-serif;
+  font-weight: 600;
+  font-style: normal;
+  font-size: 0.75rem;
+  line-height: 0.5rem;
+  color: var(--grey-70);
+}
+
+.fancy-text {
+  font-family: "Anton", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 3rem;
+  color: var(--grey-80);
+
+  &:hover {
+    color: var(--black);
+  }
+}
+
+@media screen and (min-width: 700px) and (max-width: 1200px) {
+  .bold-text-medium {
+    font-size: 1.46rem;
+  }
+  .sub-heading {
+    font-size: 0.8rem;
+  }
+  .text-body-xxs {
+    font-size: 0.5rem;
+  }
+}
+
+@media screen and (min-width: 300px) and (max-width: 700px) {
+  .bold-text-medium {
+    font-size: 0.9rem;
+  }
+  .sub-heading {
+    font-size: 0.4rem;
+  }
+  .fancy-text {
+    font-size: 1rem;
+  }
+  .text-body-xxs {
+    font-size: 0.3rem;
+  }
+  .heading {
+    font-size: 3.2rem;
+    line-height: 2.9rem;
+  }
+  .text-body-normal {
+    font-size: 1.2rem;
+  }
+}

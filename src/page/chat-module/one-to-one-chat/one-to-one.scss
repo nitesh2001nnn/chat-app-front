@@ -1,0 +1,41 @@
+.one-to-one-container {
+  height: 100%;
+  //   border-radius: 25px 20px 25px 20px;
+  background-color: aliceblue;
+  display: flex;
+  
+  .chat-one-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    .profile-msg-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+
+      .border-radius {
+        width: 43px;
+        border: 1px solid var(--grey-60);
+        border-radius: 50%;
+        height: 43px;
+      }
+      padding: 10px 20px;
+      .message-section {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 5px;
+        .counter {
+          border-radius: 15%;
+          background-color: var(--feedback-success-50);
+          padding: 2px 8px;
+        }
+      }
+      .upper-text {
+        display: flex;
+        justify-content: space-between;
+      }
+    }
+  }
+}

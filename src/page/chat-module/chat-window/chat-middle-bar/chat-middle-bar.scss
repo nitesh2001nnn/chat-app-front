@@ -1,0 +1,42 @@
+.chat-space-container {
+  background-color: var(--grey-20);
+  display: flex;
+  flex-direction: column;
+
+  padding: 15px 10px;
+  overflow: auto;
+  .incoming-msg {
+    background-color: var(--beige);
+    width: fit-content;
+    align-self: flex-start;
+    border-radius: 200px;
+    padding: 10px 20px;
+  }
+  .outcoming-msg {
+    background-color: var(--beige);
+    text-align: end;
+    width: fit-content;
+    align-self: flex-end;
+    border-radius: 200px;
+    padding: 10px 12px;
+    margin: 5px 0px;
+    .text-cont {
+      display: flex;
+    }
+    .double-tick {
+      width: 22px;
+      margin-top: 5px;
+      margin-left: 5px;
+      &-small {
+        width: 15px;
+        height: 15px;
+        margin-top: 10px;
+        margin-left: 5px;
+      }
+      &.active {
+        filter: invert(23%) sepia(92%) saturate(7481%) hue-rotate(201deg)
+          brightness(95%) contrast(101%);
+      }
+    }
+  }
+}

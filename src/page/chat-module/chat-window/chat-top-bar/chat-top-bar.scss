@@ -1,0 +1,28 @@
+.chat-top-bar-window {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 10px;
+  background-color: var(--blue);
+
+  .avatar-name-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    .name-container {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+  .right-side-container {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    img {
+      border-radius: 50%;
+      background-color: var(--grey-50);
+      width: 30px;
+      height: 30px;
+      padding: 5px;
+    }
+  }
+}

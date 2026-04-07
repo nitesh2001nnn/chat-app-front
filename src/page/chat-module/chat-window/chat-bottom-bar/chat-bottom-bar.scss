@@ -1,0 +1,25 @@
+.chat-bottom-bar-container {
+  border-radius: 20px;
+  padding: 8px 10px;
+  background-color: var(--grey-30);
+  //   width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .input-icon {
+    border-radius: 10px;
+    background-color: var(--blue);
+    padding: 8px 10px;
+  }
+
+  .input-container {
+    border: none;
+    outline: none;
+    background-color: var(--grey-30);
+    color: var(--grey-80);
+    height: 100%;
+    padding: 0;
+    width: 100%;
+  }
+}

@@ -1,0 +1,33 @@
+.overlay-visible {
+  position: fixed;
+  inset: 0;
+  background-color: rgb(0, 0, 0, 0.2);
+  height: 100%;
+  width: 100%;
+}
+
+.modal-container {
+  padding: 18px 24px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 20px 20px 20px 20px;
+  background-color: var(--btn-color);
+  max-width: 90vw;
+  max-height: 90vh;
+  min-height: 100px;
+  min-width: 400px;
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    img {
+      width: 32px;
+      cursor: pointer;
+    }
+  }
+  .modal-children {
+    margin-top: 18px;
+  }
+}

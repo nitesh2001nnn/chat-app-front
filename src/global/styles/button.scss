@@ -1,0 +1,15 @@
+.primary-button {
+  padding: 8px 24px;
+  border-radius: 55px;
+  background-color: var(--btn-color);
+  width: fit-content;
+  border: 1px solid var(--grey-40);
+}
+
+.secondary-button {
+  padding: 8px 24px;
+
+  width: fit-content;
+  background-color: var(--blue);
+  color: var(--btn-color);
+}
