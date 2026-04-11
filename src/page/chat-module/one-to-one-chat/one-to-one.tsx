@@ -7,12 +7,9 @@ import { useEffect } from "react";
 import { API_CONFIG } from "../../shared/api-config/api-config";
 import { socket } from "../../../../socket";
 
-import { getLocalStorageObjDetails } from "../../shared/helper/helper";
-
 const OneToOne = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const userID = JSON.parse(getLocalStorageObjDetails("userData")).userID;
 
   const fetchUpdateChatResult = async () => {
     const res = await axiosInstance.get(
@@ -44,54 +41,38 @@ const OneToOne = () => {
   };
 
   useEffect(() => {
-    const handleMsgUpdate = (msg: any) => {
-      console.log("mesg waht coming here", msg);
+    const handleChatListUpdate = (msg) => {
+      console.log("whatkind", msg);
       queryClient.setQueryData(["update-list"], (oldData: any) => {
-        console.log("what data cojing here", oldData);
-
         if (!oldData) return oldData;
 
         const chatIndex = oldData.findIndex(
           (itx) => Number(itx.chat_id) === Number(msg.chatId),
         );
 
-        console.log("chat index", chatIndex);
+        if (chatIndex === -1) return oldData;
 
-        if (chatIndex != -1) {
-          const updatedChat = {
-            ...oldData[chatIndex],
-            message_text: msg.message_text,
-            last_message_time: new Date().toISOString(),
-            unread_count:
-              msg.sender_id === userID
-                ? oldData[chatIndex].unread_count
-                : oldData[chatIndex].unread_count + 1,
-          };
+        const updatedData = [...oldData];
+        updatedData[chatIndex] = {
+          ...updatedData[chatIndex],
+          message_text: msg.message_text,
+          last_message_time: new Date().toISOString(),
+          unread_count: updatedData[chatIndex].unread_count + 1,
+        };
 
-          const newData = [...oldData];
-
-          newData.splice(chatIndex, 1);
-
-          newData.unshift(updatedChat);
-          console.log("update data", updatedChat);
-          return newData;
-        }
-        return oldData;
+        // Bubble updated chat to top
+        const [updatedChat] = updatedData.splice(chatIndex, 1);
+        console.log("what is updateCHat", updatedChat);
+        return [updatedChat, ...updatedData];
       });
     };
-    socket.on("reciever_message", handleMsgUpdate);
-    // socket.on("send_message", handleMsgUpdate);
+
+    socket.on("chat_list_update", handleChatListUpdate);
+
     return () => {
-      socket.off("reciever_message", handleMsgUpdate);
-      // socket.off("send_message", handleMsgUpdate);
+      socket.off("chat_list_update", handleChatListUpdate);
     };
-  }, [queryClient, userID, data]);
-
-  // useEffect(() => {
-  //   fetchUpdateChatList();
-  // }, []);
-
-  console.log("response", data);
+  }, [queryClient]);
 
   return (
     <div className="one-to-one-container">

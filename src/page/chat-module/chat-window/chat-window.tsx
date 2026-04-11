@@ -63,9 +63,8 @@ const ChatWindow = () => {
   // Removed useEffect on [id, messages] to prevent ping-pong loop
 
   useEffect(() => {
-    socket.on("reciever_message", (msg) => {
+    const handleRecieverMessage = (msg: any) => {
       console.log("waht type of message coming  here", msg);
-      console.log("messesge waht", typeof msg.chatId, "type of id", typeof id);
       if (Number(msg.chatId) === Number(id)) {
         setMessages((prev) => [...prev, msg]);
         socket.emit("seen_msg", {
@@ -73,9 +72,9 @@ const ChatWindow = () => {
           senderId: state?.other_user_id,
         });
       }
-    });
+    };
 
-    socket.on("msg_seen", ({ chatId }) => {
+    const handleMsgSeen = ({ chatId }: any) => {
       console.log("chat coming or not", chatId);
       if (Number(chatId) != Number(id)) return;
       setMessages((prev) =>
@@ -85,11 +84,14 @@ const ChatWindow = () => {
             : msg,
         ),
       );
-    });
+    };
+
+    socket.on("reciever_message", handleRecieverMessage);
+    socket.on("msg_seen", handleMsgSeen);
 
     return () => {
-      socket.off("reciever_message");
-      socket.off("msg_seen");
+      socket.off("reciever_message", handleRecieverMessage);
+      socket.off("msg_seen", handleMsgSeen);
     };
   }, [id, userID, state?.other_user_id]);
 
