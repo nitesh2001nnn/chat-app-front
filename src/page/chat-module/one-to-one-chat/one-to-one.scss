@@ -3,16 +3,31 @@
   //   border-radius: 25px 20px 25px 20px;
   background-color: aliceblue;
   display: flex;
-  
+
   .chat-one-container {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+
     .profile-msg-container {
       display: flex;
       align-items: center;
       gap: 12px;
       cursor: pointer;
+      padding: 5px 10px;
+
+      &.active {
+        border-bottom: 3px solid var(--dark-blue);
+        background-color: var(--grey-40);
+      }
+
+      &.animate-in {
+        animation: slideInFromBottom 0.35s cubic-bezier(0.45, 1, 0.36, 1)
+          forwards;
+      }
+      &.flash {
+        animation: highlightFlash 1.2s ease-out forwards;
+      }
 
       .border-radius {
         width: 43px;
@@ -37,5 +52,25 @@
         justify-content: space-between;
       }
     }
+  }
+}
+
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes highlightFlash {
+  0% {
+    background: rgba(29, 158, 117, 0.15);
+  }
+  100% {
+    background: transparent;
   }
 }

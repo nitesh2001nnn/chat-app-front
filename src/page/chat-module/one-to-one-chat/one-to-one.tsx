@@ -1,15 +1,48 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./one-to-one.scss";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { axiosInstance } from "../../shared/interceptor/interceptor";
 import { formatTime } from "../../../helpers/common-helpers";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { API_CONFIG } from "../../shared/api-config/api-config";
 import { socket } from "../../../../socket";
+import { getLocalStorageObjDetails } from "../../shared/helper/helper";
 
 const OneToOne = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const itemChatRef = useRef<Record<string, HTMLDivElement | null>>({});
+  const userID = JSON.parse(getLocalStorageObjDetails("userData")).userID;
+  const paramId = useParams();
+  const [activeChatId, setActiveID] = useState(paramId.id);
+  console.log("userid", userID);
+
+  const triggerAnimation = (chatId: any) => {
+    console.log("chat id", chatId);
+    const el = itemChatRef.current[chatId];
+    if (!el) return;
+    const parent = el.parentElement;
+    if (parent && parent.firstChild === el) return;
+    el.classList.remove("animate-in", "flash");
+    void el.offsetWidth;
+    console.log("item chat ref", el);
+    el.classList.add("animate-in");
+    el.addEventListener(
+      "animationend",
+      () => {
+        el.classList.remove("animate-in");
+        el.classList.add("flash");
+        el.addEventListener(
+          "animationend",
+          () => {
+            el.classList.remove("flash");
+          },
+          { once: true },
+        );
+      },
+      { once: true },
+    );
+  };
 
   const fetchUpdateChatResult = async () => {
     const res = await axiosInstance.get(
@@ -22,6 +55,7 @@ const OneToOne = () => {
     queryKey: ["update-list"],
     queryFn: fetchUpdateChatResult,
   });
+
   const updateSeenStatus = async (id: string) => {
     await axiosInstance.patch(
       `${API_CONFIG.BaseUrl}${API_CONFIG.UPDATESEENMSG}/${id}`,
@@ -35,6 +69,7 @@ const OneToOne = () => {
 
   const handleNavigation = (item) => {
     updateSeen(item.chat_id);
+    setActiveID(item.chat_id);
     navigate(`/chats/${item.chat_id}`, {
       state: item,
     });
@@ -51,13 +86,16 @@ const OneToOne = () => {
         );
 
         if (chatIndex === -1) return oldData;
+        const isSentByUser = Number(msg.sender_id) === Number(userID);
 
         const updatedData = [...oldData];
         updatedData[chatIndex] = {
           ...updatedData[chatIndex],
           message_text: msg.message_text,
           last_message_time: new Date().toISOString(),
-          unread_count: updatedData[chatIndex].unread_count + 1,
+          unread_count: isSentByUser
+            ? 0
+            : updatedData[chatIndex].unread_count + 1,
         };
 
         // Bubble updated chat to top
@@ -65,6 +103,8 @@ const OneToOne = () => {
         console.log("what is updateCHat", updatedChat);
         return [updatedChat, ...updatedData];
       });
+
+      setTimeout(() => triggerAnimation(Number(msg.chatId)), 50);
     };
 
     socket.on("chat_list_update", handleChatListUpdate);
@@ -72,7 +112,7 @@ const OneToOne = () => {
     return () => {
       socket.off("chat_list_update", handleChatListUpdate);
     };
-  }, [queryClient]);
+  }, [queryClient, userID]);
 
   return (
     <div className="one-to-one-container">
@@ -81,7 +121,10 @@ const OneToOne = () => {
           return (
             <div
               key={item.chat_id}
-              className="profile-msg-container"
+              ref={(el) => {
+                itemChatRef.current[item.chat_id] = el;
+              }}
+              className={`profile-msg-container ${activeChatId == item.chat_id ? "active" : ""}`}
               onClick={() => {
                 handleNavigation(item);
               }}
@@ -100,10 +143,13 @@ const OneToOne = () => {
                   <span className="sub-text text-body-xs">
                     {item.message_text}
                   </span>
-                  <span className="counter text-body-xs">
-                    {" "}
-                    {item.unread_count}
-                  </span>
+                  {item.unread_count > 0 ? (
+                    <span className="counter text-body-xs">
+                      {item.unread_count}
+                    </span>
+                  ) : (
+                    ""
+                  )}
                 </div>
               </div>
             </div>

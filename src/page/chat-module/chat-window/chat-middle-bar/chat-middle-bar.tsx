@@ -20,7 +20,6 @@ const ChatMiddleBar = ({ value, chatId }: chatMiddleBarProps) => {
   const initialRef = useRef(null);
 
   useEffect(() => {
-    console.log("botttom ref", bottomRef);
     if (!bottomRef.current) return;
 
     if (initialRef.current) {
@@ -40,7 +39,6 @@ const ChatMiddleBar = ({ value, chatId }: chatMiddleBarProps) => {
   console.log("userId", userID);
 
   const getTickStatus = (msg) => {
-    console.log("msg seen", msg);
     if (msg.sender_id !== userID) return null;
     if (msg.status === "sent")
       return (
