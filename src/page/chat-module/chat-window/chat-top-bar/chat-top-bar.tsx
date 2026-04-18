@@ -2,18 +2,19 @@ import "./chat-top-bar.scss";
 import Avatar from "../../../../common-component/avatar/avatar";
 
 type chatTopBarProps = {
-  name:string;
-  profile_icon:string;
-}
+  name: string;
+  profile_icon: string;
+  active_status: string;
+};
 
-const ChatTopBar = ({name,profile_icon}:chatTopBarProps) => {
+const ChatTopBar = ({ name, profile_icon, active_status }: chatTopBarProps) => {
   return (
     <div className="chat-top-bar-window">
       <div className="avatar-name-container">
-        <Avatar src={profile_icon}/>
+        <Avatar src={profile_icon} />
         <div className="name-container">
           <span className="bold-text-medium-xs">{name}</span>
-          <span>Last seen</span>
+          <span>{active_status}</span>
         </div>
       </div>
       <div className="right-side-container">

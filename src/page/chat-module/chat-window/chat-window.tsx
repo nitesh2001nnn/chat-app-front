@@ -3,7 +3,7 @@ import ChatBottomBar from "./chat-bottom-bar/chat-bottom-bar";
 import ChatMiddleBar from "./chat-middle-bar/chat-middle-bar";
 import ChatTopBar from "./chat-top-bar/chat-top-bar";
 import "./chat-window.scss";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "../../shared/interceptor/interceptor";
@@ -11,6 +11,7 @@ import { socket } from "../../../../socket";
 import { getLocalStorageObjDetails } from "../../shared/helper/helper";
 import axios from "axios";
 import { API_CONFIG } from "../../shared/api-config/api-config";
+import { useAuth } from "../../../../auth-context";
 
 type messageType = {
   id: number;
@@ -21,18 +22,58 @@ type messageType = {
 const ChatWindow = () => {
   const { state } = useLocation();
   const { id } = useParams();
+  const { onlineUsers } = useAuth();
   const [value, setValue] = useState<string>("");
   const [messages, setMessages] = useState<messageType[]>([]);
+  const [isTyping, setIsTyping] = useState(false);
+  const typingRef = useRef(null);
   const userID = JSON.parse(getLocalStorageObjDetails("userData")).userID;
+
+  // Online status is now managed globally in AuthContext
 
   const handleMessage = () => {
     socket.emit("send_message", {
       chatId: id,
-
       recieverId: state?.other_user_id,
       message: value,
     });
+
+    // Immediately stop typing when message is sent
+    if (typingRef.current) {
+      clearTimeout(typingRef.current);
+    }
+    socket.emit("stop_typing", {
+      chatId: id,
+      recieverId: state?.other_user_id,
+      senderId: userID,
+    });
+
     setValue("");
+  };
+
+  const handleInputChange = (val: string) => {
+    setValue(val);
+
+    // Emit typing event
+    socket.emit("typing", {
+      chatId: id,
+      recieverId: state?.other_user_id,
+      senderId: userID,
+    });
+
+    // Clear previous timeout
+    if (typingRef.current) {
+      clearTimeout(typingRef.current);
+    }
+
+    // Set new timeout to stop typing after 2 seconds of inactivity
+    typingRef.current = setTimeout(() => {
+      socket.emit("stop_typing", {
+        chatId: id,
+        recieverId: state?.other_user_id,
+        senderId: userID,
+      });
+    }, 2000);
   };
 
   console.log("state", state, messages, id);
@@ -95,6 +136,33 @@ const ChatWindow = () => {
     };
   }, [id, userID, state?.other_user_id]);
 
+  useEffect(() => {
+    const handleTyping = ({ chatId, senderId }) => {
+      if (Number(chatId) !== Number(id)) {
+        return;
+      }
+      setIsTyping(true);
+    };
+    const handleStopTyping = ({ chatId, senderId }) => {
+      if (Number(chatId) !== Number(id)) {
+        return;
+      }
+      setIsTyping(false);
+    };
+
+    socket.on("typing", handleTyping);
+    socket.on("stop_typing", handleStopTyping);
+
+    return () => {
+      socket.off("typing", handleTyping);
+      socket.off("stop_typing", handleStopTyping);
+    };
+  }, [id]);
+
+  useEffect(() => {
+    console.log("istyping", isTyping);
+  }, [isTyping]);
+
   console.log("messages", messages);
 
   if (!id) {
@@ -105,9 +173,22 @@ const ChatWindow = () => {
       <ChatTopBar
         name={state?.display_name}
         profile_icon={state?.profile_icon}
+        active_status={
+          isTyping
+            ? "typing..."
+            : onlineUsers.some(
+                  (id: any) => String(id) === String(state?.other_user_id),
+                )
+              ? "online"
+              : "offline"
+        }
       />
       <ChatMiddleBar value={messages} chatId={id} />
-      <ChatBottomBar onChange={setValue} value={value} onSend={handleMessage} />
+      <ChatBottomBar
+        onChange={handleInputChange}
+        value={value}
+        onSend={handleMessage}
+      />
     </div>
   );
 };

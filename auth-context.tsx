@@ -16,6 +16,7 @@ interface AuthContextType {
   user: string | null;
   socket: Socket | null;
   setUser: React.Dispatch<React.SetStateAction<string | null>>;
+  onlineUsers: any[];
 }
 
 interface AuthProviderProps {
@@ -30,6 +31,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<string | null>(null);
+  const [onlineUsers, setOnlineUsers] = useState<any[]>([]);
   const socketRef = useRef<Socket | null>(null);
   console.log("called", user, socketRef);
 
@@ -56,12 +58,28 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const s = socketRef.current;
     console.log("User is here or nto", user);
 
+    const joinSession = () => {
+      console.log("🚀 Joining session for user:", user);
+      s.emit("join", user);
+      s.emit("get_online_users");
+    };
+
     console.log("🚀 socket.connect()");
     s.connect();
 
+    // If the socket is already connected (e.g. from the login page session), 
+    // the 'connect' event won't fire again. We must join manually.
+    if (s.connected) {
+      joinSession();
+    }
+
     s.on("connect", () => {
       console.log("✅ connected:", s.id);
-      s.emit("join", user);
+      joinSession();
+    });
+
+    s.on("online_users", (users: any[]) => {
+      setOnlineUsers(users);
     });
 
     s.on("connect_error", (err) => {
@@ -70,12 +88,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     return () => {
       s.off("connect");
+      s.off("online_users");
       s.off("connect_error");
     };
   }, [user]);
 
   return (
-    <AuthContext.Provider value={{ user, socket: socketRef.current, setUser }}>
+    <AuthContext.Provider
+      value={{ user, socket: socketRef.current, setUser, onlineUsers }}
+    >
       {children}
     </AuthContext.Provider>
   );
