@@ -15,6 +15,7 @@ const OneToOne = () => {
   const userID = JSON.parse(getLocalStorageObjDetails("userData")).userID;
   const paramId = useParams();
   const [activeChatId, setActiveID] = useState(paramId.id);
+  const [isTyping, setIsTyping] = useState();
   console.log("userid", userID);
 
   const triggerAnimation = (chatId: any) => {
@@ -68,6 +69,19 @@ const OneToOne = () => {
   });
 
   const handleNavigation = (item) => {
+    queryClient.setQueryData(["update-list"], (oldData: any) => {
+      if (!oldData) return oldData;
+
+      return oldData.map((itx: any) => {
+        if (Number(item.chat_id) === Number(item.chat_id)) {
+          return {
+            ...itx,
+            unread_count: 0,
+          };
+        }
+        return itx;
+      });
+    });
     updateSeen(item.chat_id);
     setActiveID(item.chat_id);
     navigate(`/chats/${item.chat_id}`, {
@@ -106,13 +120,37 @@ const OneToOne = () => {
 
       setTimeout(() => triggerAnimation(Number(msg.chatId)), 50);
     };
-
     socket.on("chat_list_update", handleChatListUpdate);
 
     return () => {
       socket.off("chat_list_update", handleChatListUpdate);
     };
   }, [queryClient, userID]);
+
+  useEffect(() => {
+    const handleTyping = (msg: any) => {
+      console.log("typing ind", msg);
+      if (Number(msg.senderId) === Number(userID)) return;
+
+      setIsTyping((prev: any) => ({
+        ...prev,
+        [msg.chatId]: true,
+      }));
+
+      setTimeout(() => {
+        setIsTyping((prev: any) => ({
+          ...prev,
+          [msg.chatId]: false,
+        }));
+      }, 1000);
+    };
+
+    socket.on("typing", handleTyping);
+
+    return () => {
+      socket.off("typing", handleTyping);
+    };
+  }, [userID]);
 
   return (
     <div className="one-to-one-container">
@@ -141,7 +179,9 @@ const OneToOne = () => {
                 </div>
                 <div className="upper-text">
                   <span className="sub-text text-body-xs">
-                    {item.message_text}
+                    {isTyping?.[item?.chat_id]
+                      ? "typing..."
+                      : item.message_text}
                   </span>
                   {item.unread_count > 0 ? (
                     <span className="counter text-body-xs">
