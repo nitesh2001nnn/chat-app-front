@@ -11,5 +11,7 @@ export type formState = {
     fullName: FieldState;
     email: FieldState;
     phoneNumber: FieldState;
-    remember?: { isChecked: boolean }
+    remember?: { isChecked: boolean };
+    passWord: FieldState;
+    confPassword: FieldState;
 };

@@ -74,4 +74,28 @@ export const validator = {
         if (!/^\d{10}$/.test(value)) return "Phone number must be 10 digits";
         return "";
     },
+    passWord: (value: string) => {
+        if (!value) {
+            return "Password is required!!"
+        }
+        else if (!/^(?=.*[}A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(value)) {
+            return "Password must be alphanumeric character"
+        }
+        else if (value.length < 8) {
+            return "Password must be 8 character long !!"
+
+        }
+        return ""
+
+    },
+    confPassword: (value: string, formData?: any) => {
+        if (!value) {
+            return "Password is required!!"
+        }
+        if (value != formData.passWord.value) {
+            return "Password do not match !!"
+        }
+        return ""
+    },
+    
 };
