@@ -1,0 +1,11 @@
+.lock-screen-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid var(--blue);
+  border-radius: 200px;
+  padding: 20px;
+  .failed-text {
+    color: var(--blue);
+  }
+}

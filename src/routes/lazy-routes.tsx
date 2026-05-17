@@ -8,7 +8,8 @@ const LazyAuthenticationPreview = React.lazy(
   () => import("../../src/page/authentication/authentication"),
 );
 const LazyAuthenticationSignup = React.lazy(
-  () => import("../../src/page/authentication/signup/signup"),
+  () =>
+    import("../../src/page/authentication/signup/switch-signup/switch-signup-flow"),
 );
 
 const LazyContactPage = React.lazy(

@@ -78,9 +78,8 @@ export const validator = {
         if (!value) {
             return "Password is required!!"
         }
-        else if (!/^(?=.*[}A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(value)) {
-            return "Password must be alphanumeric character"
-        }
+        else if (!/^[a-zA-Z0-9@]+$/.test(value))
+            return "Password can contain only letters, numbers and @";
         else if (value.length < 8) {
             return "Password must be 8 character long !!"
 
@@ -97,5 +96,5 @@ export const validator = {
         }
         return ""
     },
-    
+
 };

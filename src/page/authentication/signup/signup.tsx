@@ -1,11 +1,17 @@
 import { useState } from "react";
-import Checkbox from "../../../common-component/checkbox/checkbox";
 import TextInput from "../../../common-component/inputs/text-input/text-input";
 import "./signup.scss";
 import type { formState } from "../../shared/types/types";
 import { validator } from "../../chat-module/constants/one-to-one";
+import { handleSignup } from "./signup-service/service";
+import { useMutation } from "@tanstack/react-query";
 
-const Signup = () => {
+interface signupProps {
+  value: string;
+  changeScreen: (name: string, data: any) => void;
+}
+
+const Signup = ({ value, changeScreen }: signupProps) => {
   const [formData, setFormData] = useState<formState>({
     fullName: { value: "", isTouched: false, isValid: false, errorText: "" },
     email: { value: "", isTouched: false, isValid: false, errorText: "" },
@@ -66,12 +72,59 @@ const Signup = () => {
       };
     });
   };
+
+  const isFormValid = Object.values(formData).every((itm: any) => itm.isValid);
+
+  const handleSignupSubmit = useMutation({
+    mutationKey: ["signup"],
+
+    mutationFn: async (data) => {
+      console.log("mutation called");
+
+      const res = await handleSignup(data);
+
+      console.log("response", res);
+
+      return res;
+    },
+
+    onSuccess: () => {
+      changeScreen("otp", formData);
+    },
+
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  const handleSubmit = (e?: React.MouseEvent<HTMLImageElement>) => {
+    e?.preventDefault();
+    if (!isFormValid) return;
+
+    const payload = {
+      email: formData.email.value,
+      phoneNumber: formData.phoneNumber.value,
+      password: formData.passWord.value,
+      fullName: formData.fullName.value,
+    };
+    console.log("paylaod", payload);
+
+    handleSignupSubmit.mutate(payload);
+  };
+
+  console.log("isformValid", isFormValid);
+
   return (
     <div className="signup-container">
       <div className="signup-header bold-text-medium">
         <span>Signup</span>
       </div>
-      <form>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit();
+        }}
+      >
         <div className="form-top-container">
           <TextInput
             value={formData.fullName.value}
@@ -81,19 +134,29 @@ const Signup = () => {
             onChange={(e: any) => handleChange("fullName", e.target.value)}
             onBlur={() => handleBlur("fullName")}
           />
-          <TextInput label={"Email"} type={"email"} />
           <TextInput
+            label={"Email"}
+            type={"email"}
+            value={formData.email.value}
+            errorText={formData.email.errorText}
+            placeholder={"Enter an Email address"}
+            onChange={(e: any) => handleChange("email", e.target.value)}
+            onBlur={() => handleBlur("email")}
+          />
+          <TextInput
+            type={"password"}
             value={formData.passWord.value}
             errorText={formData.passWord.errorText}
-            placeholder={""}
+            placeholder={"Enter Password"}
             label={"Password"}
             onChange={(e: any) => handleChange("passWord", e.target.value)}
             onBlur={() => handleBlur("passWord")}
           />
           <TextInput
+            type={"password"}
             value={formData.confPassword.value}
             errorText={formData.confPassword.errorText}
-            placeholder={""}
+            placeholder={"Enter Confirm Password"}
             label={"Confirm Password"}
             onChange={(e: any) => handleChange("confPassword", e.target.value)}
             onBlur={() => handleBlur("confPassword")}
@@ -104,17 +167,22 @@ const Signup = () => {
             placeholder={"+91*********9"}
             label={"Phone Number"}
             maxLength={10}
-            onChange={(e: any) => handleChange("phoneNumber", e.target.value)}
+            onChange={(e: any) =>
+              handleChange("phoneNumber", e.target.value.replace(/\D/g, ""))
+            }
             onBlur={() => handleBlur("phoneNumber")}
           />
         </div>
 
         <div className="bottom-container">
           <div className="arrow-container">
-            <img
-              src="/assets/icons/left-arrow.svg"
-              // className={`${!isValid ? "disabled" : ""}`}
-            />
+            <button
+              type="submit"
+              disabled={!isFormValid || handleSignupSubmit.isPending}
+              className="arrow-btn"
+            >
+              <img src="/assets/icons/left-arrow.svg" />
+            </button>
           </div>
         </div>
       </form>

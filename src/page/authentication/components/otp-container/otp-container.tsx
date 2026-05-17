@@ -4,10 +4,11 @@ import { makePostRequest } from "../../../shared/services/common-services";
 import { API_CONFIG } from "../../../shared/api-config/api-config";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../../../auth-context";
+import OtpTimer from "../../../shared/component/otp-timer/otp-timer";
 
 interface otpProps {
   value: string;
-  changeScreen: any;
+  changeScreen: (name: string, data: any) => void;
   data: any;
 }
 
@@ -15,6 +16,7 @@ const Otpcontainer = ({ changeScreen, data }: otpProps) => {
   console.log("data is waht", data);
 
   const shiftRef = useRef<any>([]);
+  const [expireTimer, setExpireTimer] = useState(false);
   const [otpValue, setOtpValue] = useState({
     value: [],
     isTouched: "",
@@ -60,7 +62,6 @@ const Otpcontainer = ({ changeScreen, data }: otpProps) => {
       payload: {
         email: data.email.value,
         otp: otpValue.value.join(""),
-        phoneNumber: data.phoneNumber.value,
       },
       instance: false,
 
@@ -75,9 +76,13 @@ const Otpcontainer = ({ changeScreen, data }: otpProps) => {
           setUser(res?.data?.userID);
           navigate("/chats");
         }
+        console.log("res for otp", res);
       },
       errorCb: (err: any) => {
-        console.log(err);
+        console.log(err.response.data);
+        if (err.response.data.isLocked) {
+          changeScreen("lock-screen", err.response.data.isLocked);
+        }
       },
     });
   };
@@ -88,6 +93,9 @@ const Otpcontainer = ({ changeScreen, data }: otpProps) => {
 
   return (
     <div className="otp-container">
+      <div className="otp-header bold-text-medium">
+        <span>OTP</span>
+      </div>
       <div className="otp-boxes">
         {Array.from({ length: 6 }).map((_, i) => {
           return (
@@ -96,19 +104,32 @@ const Otpcontainer = ({ changeScreen, data }: otpProps) => {
               value={otpValue.value[i]}
               className="boxes"
               ref={(el: any) => (shiftRef.current[i] = el)}
-              onChange={(e: any) => handleChange(e.target.value, i)}
+              onChange={(e: any) =>
+                handleChange(e.target.value.replace(/\D/g, ""), i)
+              }
               maxLength={1}
               onKeyDown={(e) => handleKeyDown(e, i)}
             ></input>
           );
         })}
       </div>
-      <div className="arrow-container">
-        <img
-          src="/assets/icons/left-arrow.svg"
-          className={`${!isValid ? "disabled" : ""}`}
-          onClick={handleScreen}
-        />
+      <div className="bottom-container">
+        <div className="btm-otp">
+          {expireTimer ? (
+            <span className="bold-text-medium-xs otp-resend-text">
+              Resend OTP
+            </span>
+          ) : (
+            <OtpTimer timer={300} isExpiredDone={() => setExpireTimer(true)} />
+          )}
+        </div>
+        <div className="arrow-container">
+          <img
+            src="/assets/icons/left-arrow.svg"
+            className={`${!isValid ? "disabled" : ""}`}
+            onClick={handleScreen}
+          />
+        </div>
       </div>
     </div>
   );
