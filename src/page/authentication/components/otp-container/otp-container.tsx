@@ -81,7 +81,7 @@ const Otpcontainer = ({ changeScreen, data }: otpProps) => {
       errorCb: (err: any) => {
         console.log(err.response.data);
         if (err.response.data.isLocked) {
-          changeScreen("lock-screen", err.response.data.isLocked);
+          changeScreen("lock-screen",data.email.value,"login-otp-value" );
         }
       },
     });

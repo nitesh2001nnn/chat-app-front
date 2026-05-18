@@ -8,13 +8,16 @@ const SwitchSignupFlow = () => {
   const [screenName, setScreenName] = useState({
     name: "signup",
     data: {},
+    type:""
   });
 
-  const handleScreen = (name, data) => {
+  const handleScreen = (name, data,type?:string) => {
     console.log("name", name, "adata", data);
     setScreenName({
       name,
       data,
+      type
+
     });
   };
   useEffect(() => {
