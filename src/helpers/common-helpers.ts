@@ -7,3 +7,14 @@ export const formatTime = (time) => {
         hour12: false,
     })
 };
+
+export const getRemainingSeconds = (dbTime: any) => {
+    const targetTime = new Date(dbTime).getTime();
+    const currentTime = Date.now();
+
+    const diff = Math.floor(
+        (targetTime - currentTime) / 1000
+    );
+
+    return diff > 0 ? diff : 0;
+};

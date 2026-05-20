@@ -5,7 +5,8 @@ const LazyChatMainPage = React.lazy(
 );
 
 const LazyAuthenticationPreview = React.lazy(
-  () => import("../../src/page/authentication/authentication"),
+  () =>
+    import("../../src/page/authentication/login/switch-login-screen/switch-login-screen"),
 );
 const LazyAuthenticationSignup = React.lazy(
   () =>

@@ -1,0 +1,68 @@
+.login-container {
+  display: flex;
+  flex-direction: column;
+
+  width: 50%;
+  height: 100%;
+  justify-content: center;
+  margin: auto;
+
+  .login-header {
+    gap: 20px;
+    background-color: var(--blue);
+    border-radius: 25px 25px 0px 0px;
+    padding: 20px 25px;
+  }
+  form {
+    .form-top-container {
+      padding: 20px 25px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      border-left: 1px solid var(--grey-80);
+      border-right: 1px solid var(--grey-80);
+    }
+
+    .bottom-container {
+      background-color: var(--blue);
+      border-radius: 0px 0px 10px 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 25px;
+      .signup-redirect {
+        display: flex;
+        justify-content: flex-start;
+        color: var(--beige);
+        cursor: pointer;
+        &:hover {
+          color: var(--grey-10);
+        }
+      }
+
+      .arrow-container {
+        display: flex;
+        justify-content: flex-end;
+        .arrow-btn {
+          border: none;
+          background: transparent;
+          cursor: pointer;
+        }
+
+        .arrow-btn:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+          pointer-events: none;
+        }
+        // img {
+        //   cursor: pointer;
+        //   &.disabled {
+        //     opacity: 0.5;
+        //     cursor: not-allowed;
+        //     pointer-events: none;
+        //   }
+        // }
+      }
+    }
+  }
+}

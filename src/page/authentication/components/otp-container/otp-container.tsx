@@ -8,7 +8,7 @@ import OtpTimer from "../../../shared/component/otp-timer/otp-timer";
 
 interface otpProps {
   value: string;
-  changeScreen: (name: string, data: any) => void;
+  changeScreen: (name: string, data: any, type: string) => void;
   data: any;
 }
 
@@ -81,7 +81,7 @@ const Otpcontainer = ({ changeScreen, data }: otpProps) => {
       errorCb: (err: any) => {
         console.log(err.response.data);
         if (err.response.data.isLocked) {
-          changeScreen("lock-screen",data.email.value,"login-otp-value" );
+          changeScreen("lock-screen", data.email.value, "login-otp-value");
         }
       },
     });

@@ -8,10 +8,10 @@ export type FieldState = {
 
 
 export type formState = {
-    fullName: FieldState;
-    email: FieldState;
-    phoneNumber: FieldState;
+    fullName?: FieldState;
+    email?: FieldState;
+    phoneNumber?: FieldState;
     remember?: { isChecked: boolean };
-    passWord: FieldState;
-    confPassword: FieldState;
+    passWord?: FieldState;
+    confPassword?: FieldState;
 };
