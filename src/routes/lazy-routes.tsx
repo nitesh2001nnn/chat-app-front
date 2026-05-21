@@ -21,10 +21,16 @@ const LazyChatWindow = React.lazy(
   () => import("../../src/page/chat-module/chat-window/chat-window"),
 );
 
+const LazyForgotPass = React.lazy(
+  () =>
+    import("../page/authentication/forgot-pass/switch-forgot-pass-screen/switch-forgot-pass"),
+);
+
 export {
   LazyChatMainPage,
   LazyAuthenticationPreview,
   LazyContactPage,
   LazyChatWindow,
   LazyAuthenticationSignup,
+  LazyForgotPass,
 };

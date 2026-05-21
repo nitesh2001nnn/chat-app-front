@@ -11,12 +11,16 @@ interface lockScreenProps {
 
 const LockScreen = ({ data, type, changeScreen }: lockScreenProps) => {
   const [isExpired, setIsExpired] = useState(false);
-  const { resendOtpMutate } = UseResendOtp();
+  const changeScreenTask = (name: string, data: any) => {
+    changeScreen(name, data);
+  };
+  const { resendOtpMutate } = UseResendOtp(changeScreenTask);
 
   const handleRetry = () => {
     switch (type) {
       case "login-otp-value":
         resendOtpMutate.mutate({ email: data.email });
+
         break;
       case "wrong-pass":
         changeScreen("login", {});
