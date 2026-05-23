@@ -5,6 +5,7 @@ import {
   LazyChatWindow,
   LazyContactPage,
   LazyForgotPass,
+  LazyResetPass,
 } from "./lazy-routes";
 import OneToOne from "../page/chat-module/one-to-one-chat/one-to-one";
 import LoginGuard from "../gaurds/login-gaurd";
@@ -46,5 +47,9 @@ export const Routers = createBrowserRouter([
   {
     path: "forgot-password",
     element: <LazyForgotPass />,
+  },
+  {
+    path: "reset-password/:id",
+    element: <LazyResetPass />,
   },
 ]);

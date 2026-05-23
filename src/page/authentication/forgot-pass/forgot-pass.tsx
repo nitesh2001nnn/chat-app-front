@@ -22,33 +22,54 @@ const ForgotPass = ({ value, changeScreen }: ForgotPassProps) => {
     return validator[field](value, updateFormData);
   };
 
-  const handleChange = (field: string, value: string) => {
+  const handleChange = (field: keyof formState, value: string) => {
     setFormData((prev) => {
-      const updateField = {
+      const error = validatorField(field, value, prev);
+
+      return {
         ...prev,
         [field]: {
           ...prev[field],
-          value: value,
+          value,
+          errorText: prev[field].isTouched ? error : "",
+          isValid: !error,
         },
       };
+    });
+  };
 
-      const error = prev[field]?.isTouched
-        ? validatorField(field, value, prev)
-        : "";
+  const handleBlur = (field: keyof formState) => {
+    setFormData((prev) => {
+      const error = validatorField(field, prev[field].value, prev);
 
       return {
-        ...updateField,
+        ...prev,
         [field]: {
+          ...prev[field],
+          isTouched: true,
           errorText: error,
           isValid: !error,
         },
       };
     });
   };
+
+  const isValid = Object.values(formData).every(
+    (field) => field.isValid && field.value.trim() !== "",
+  );
+
   return (
     <div className="forgot-pass-container">
       <div className="forgot-header bold-text-medium">
         <span>Forgot Password</span>
+      </div>
+      <div className="email-checker">
+        <span className="text-body email-check-text">
+          Successfully !!
+          <div className="text-body email-check-text">
+            Password Change request has to be sent , Please check email!!
+          </div>
+        </span>
       </div>
       <form>
         <div className="form-top-container">
@@ -57,12 +78,15 @@ const ForgotPass = ({ value, changeScreen }: ForgotPassProps) => {
             errorText={formData.email.errorText}
             placeholder={"Enter Your Email"}
             label={"Email"}
+            onBlur={() => handleBlur("email")}
             onChange={(e: any) => handleChange("email", e.target.value)}
           />
         </div>
 
-        <div className="btn-container primary-button">
-          <button>Forgot Password</button>
+        <div className="btn-container n">
+          <button className={`primary-button ${!isValid ? "disabled" : ""} `}>
+            Forgot Password
+          </button>
         </div>
       </form>
     </div>

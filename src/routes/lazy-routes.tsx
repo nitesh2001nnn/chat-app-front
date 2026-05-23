@@ -26,6 +26,11 @@ const LazyForgotPass = React.lazy(
     import("../page/authentication/forgot-pass/switch-forgot-pass-screen/switch-forgot-pass"),
 );
 
+const LazyResetPass = React.lazy(
+  () =>
+    import("../page/authentication/forgot-pass/password-reset/password-reset"),
+);
+
 export {
   LazyChatMainPage,
   LazyAuthenticationPreview,
@@ -33,4 +38,5 @@ export {
   LazyChatWindow,
   LazyAuthenticationSignup,
   LazyForgotPass,
+  LazyResetPass,
 };
