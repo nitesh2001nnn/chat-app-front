@@ -49,7 +49,7 @@ export const Routers = createBrowserRouter([
     element: <LazyForgotPass />,
   },
   {
-    path: "reset-password/:id",
+    path: "reset-password",
     element: <LazyResetPass />,
   },
 ]);
