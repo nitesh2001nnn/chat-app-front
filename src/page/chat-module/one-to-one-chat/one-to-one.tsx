@@ -69,6 +69,7 @@ const OneToOne = () => {
   });
 
   const handleNavigation = (item) => {
+    console.log("navigation item", item);
     queryClient.setQueryData(["update-list"], (oldData: any) => {
       if (!oldData) return oldData;
 
@@ -99,7 +100,10 @@ const OneToOne = () => {
           (itx) => Number(itx.chat_id) === Number(msg.chatId),
         );
 
-        if (chatIndex === -1) return oldData;
+        if (chatIndex === -1) {
+          queryClient.invalidateQueries({ queryKey: ["update-list"] });
+          return oldData;
+        }
         const isSentByUser = Number(msg.sender_id) === Number(userID);
 
         const updatedData = [...oldData];
@@ -156,6 +160,7 @@ const OneToOne = () => {
     <div className="one-to-one-container">
       <div className="chat-one-container">
         {data?.map((item: any) => {
+          console.log("data in chat list", data);
           return (
             <div
               key={item.chat_id}

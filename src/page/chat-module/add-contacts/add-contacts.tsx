@@ -4,7 +4,7 @@ import TextInput from "../../../common-component/inputs/text-input/text-input";
 
 import "./add-contacts.scss";
 import { validator } from "../constants/one-to-one";
-import { QueryClient, useMutation } from "@tanstack/react-query";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { AddContact } from "./api/add-contact-services";
 
 interface addContactsProps {
@@ -18,7 +18,7 @@ const AddContacts = ({ onClose }: addContactsProps) => {
     phoneNumber: { value: "", isTouched: false, isValid: false, errorText: "" },
   });
 
-  const queryClient = new QueryClient();
+  const queryClient = useQueryClient();
 
   const handleChange = (field: keyof formState, value: any) => {
     setFormData((prev) => {

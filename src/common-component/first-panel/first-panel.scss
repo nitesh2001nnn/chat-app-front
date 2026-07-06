@@ -6,12 +6,27 @@
   width: 70px;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   gap: 12px;
 
-  .element-icon {
-    padding: 4px 10px;
-    text-align: center;
-    background-color: var(--blue);
-    border-radius: 8px;
+  .top-elements {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    .element-icon {
+      padding: 4px 10px;
+      text-align: center;
+      background-color: var(--blue);
+      border-radius: 8px;
+    }
+  }
+
+  .lower-element {
+    .media-section {
+      img {
+        width: 55px;
+      }
+      margin-bottom: 5px;
+    }
   }
 }

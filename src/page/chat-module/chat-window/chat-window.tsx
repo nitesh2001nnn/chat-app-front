@@ -26,12 +26,18 @@ const ChatWindow = () => {
   const [value, setValue] = useState<string>("");
   const [messages, setMessages] = useState<messageType[]>([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [profileData, setProfileData] = useState({});
   const typingRef = useRef(null);
   const userID = JSON.parse(getLocalStorageObjDetails("userData")).userID;
+
+  useEffect(() => {
+    console.log("state data inw indow tab", state);
+  }, [state]);
 
   // Online status is now managed globally in AuthContext
 
   const handleMessage = () => {
+    console.log("chatid", id, "recieverId", state, "message", value);
     socket.emit("send_message", {
       chatId: id,
       recieverId: state?.other_user_id,

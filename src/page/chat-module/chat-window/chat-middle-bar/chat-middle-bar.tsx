@@ -60,6 +60,7 @@ const ChatMiddleBar = ({ value, chatId }: chatMiddleBarProps) => {
     <div className="chat-space-container">
       {value?.map((itx, index: number) => {
         const isOutgoing = itx.sender_id !== userID;
+        console.log("isoutoging", isOutgoing, itx, userID);
 
         return (
           <React.Fragment key={index}>

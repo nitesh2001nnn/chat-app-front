@@ -10,3 +10,8 @@ export const AddContact = async (payload: any) => {
     const res = await axiosInstance.post(`${API_CONFIG.BaseUrl}${API_CONFIG.ADD_CONTACT}`, payload);
     return res.data
 }
+
+export const getOrCreateChat = async (receiverId: number) => {
+    const res = await axiosInstance.post(`${API_CONFIG.BaseUrl}${API_CONFIG.GET_OR_CREATE_CHAT}`, { receiverId });
+    return res.data;
+}
