@@ -1,0 +1,54 @@
+.profile-page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 4px 8px;
+
+  .main-text {
+    padding: 12px 8px;
+  }
+  .logout-container {
+    color: var(--feedback-error-50);
+    height: 45px;
+    width: 45px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    &:hover {
+      color: var(--feedback-error-50);
+      opacity: 0.6;
+    }
+  }
+
+  .avatar-place {
+    display: flex;
+    align-self: stretch;
+    justify-content: center;
+    .avatar-center {
+      width: 50%;
+      height: 150px;
+    }
+  }
+  .profile-data-container {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    border-radius: 15px;
+    cursor: pointer;
+    padding: 4px 5px;
+    &:hover {
+      background-color: var(--grey-50);
+    }
+
+    img {
+      height: 45px;
+      width: 45px;
+    }
+    .side-label-container {
+      .lower-container {
+        margin-top: 8px;
+      }
+    }
+  }
+}
