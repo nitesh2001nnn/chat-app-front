@@ -6,6 +6,7 @@ import { RouterProvider } from "react-router-dom";
 import { Routers } from "./routes/routes.tsx";
 import { AuthProvider } from "../auth-context.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import "cropperjs/dist/cropper.css";
 
 const queryClient = new QueryClient();
 

@@ -3,7 +3,7 @@
   flex-direction: column;
   gap: 15px;
   padding: 4px 8px;
-
+  //   width: 50%;
   .main-text {
     padding: 12px 8px;
   }
@@ -23,11 +23,13 @@
 
   .avatar-place {
     display: flex;
-    align-self: stretch;
     justify-content: center;
+    align-items: center;
+
     .avatar-center {
-      width: 50%;
-      height: 150px;
+      width: clamp(100px, 20vw, 180px);
+      aspect-ratio: 1;
+      flex-shrink: 0;
     }
   }
   .profile-data-container {
