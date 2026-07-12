@@ -1,0 +1,10 @@
+.cropper-side-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 500px;
+  .btn-container {
+    flex: 1;
+    width: 100%;
+  }
+}

@@ -1,5 +1,6 @@
 import { Cropper, type ReactCropperElement } from "react-cropper";
 import { useRef } from "react";
+import "./cropper.scss";
 
 interface cropImg {
   image: string;
@@ -24,7 +25,7 @@ const CropperPart = ({ image, croppedImage, onClose }: cropImg) => {
     console.log("cropperref", cropperRefCur, cropperRef);
   };
   return (
-    <>
+    <div className="cropper-side-container">
       <Cropper
         src={image}
         style={{ height: 400, width: "100%" }}
@@ -41,11 +42,10 @@ const CropperPart = ({ image, croppedImage, onClose }: cropImg) => {
         responsive={true}
         ref={cropperRef}
       />
-      <button className="primary-button" onClick={croppedImg}>
+      <button className="secondary-button btn-container" onClick={croppedImg}>
         Crop Image
       </button>
-      ;
-    </>
+    </div>
   );
 };
 
