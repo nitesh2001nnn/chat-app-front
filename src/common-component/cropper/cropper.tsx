@@ -5,25 +5,38 @@ import "./cropper.scss";
 interface cropImg {
   image: string;
   croppedImage: (img: string) => void;
+  onCrop: (blob: Blob, preview: string) => void;
   onClose: () => void;
 }
 
-const CropperPart = ({ image, croppedImage, onClose }: cropImg) => {
+const CropperPart = ({ image, croppedImage, onClose, onCrop }: cropImg) => {
   const cropperRef = useRef<ReactCropperElement>(null);
 
-  const croppedImg = () => {
-    const cropperRefCur = cropperRef?.current?.cropper;
+  const handleCrop = () => {
+    console.log("Crop clicked");
 
-    if (!cropperRefCur) return;
-    const croppedPerfectImg = cropperRefCur
-      .getCroppedCanvas()
-      .toDataURL("image/png");
+    const cropper = cropperRef.current?.cropper;
 
-    croppedImage(croppedPerfectImg);
-    onClose();
+    if (!cropper) {
+      console.log("No cropper instance");
+      return;
+    }
 
-    console.log("cropperref", cropperRefCur, cropperRef);
+    console.log("Cropper found");
+
+    const canvas = cropper.getCroppedCanvas();
+
+    canvas.toBlob((blob) => {
+      console.log("Blob:", blob);
+
+      if (!blob) return;
+
+      onCrop(blob, URL.createObjectURL(blob));
+      console.log("Closing modal");
+      onClose();
+    });
   };
+
   return (
     <div className="cropper-side-container">
       <Cropper
@@ -42,7 +55,7 @@ const CropperPart = ({ image, croppedImage, onClose }: cropImg) => {
         responsive={true}
         ref={cropperRef}
       />
-      <button className="secondary-button btn-container" onClick={croppedImg}>
+      <button className="secondary-button btn-container" onClick={handleCrop}>
         Crop Image
       </button>
     </div>

@@ -9,7 +9,8 @@ export const API_CONFIG = {
     ADD_CONTACT: '/auth/api/add-contact',
     GET_OR_CREATE_CHAT: '/auth/api/get-or-create-chat',
     PASSWORD_GEN_TOKEN: '/auth/api/forgot-password-token',
-    PASSWORD_RESET: '/auth/api/reset-password'
+    PASSWORD_RESET: '/auth/api/reset-password',
+    UPLOAD_PHOTO: '/auth/api/profile-photo'
 
 
 

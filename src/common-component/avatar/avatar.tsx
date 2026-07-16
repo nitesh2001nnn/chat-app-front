@@ -4,11 +4,12 @@ import CropperPart from "../cropper/cropper";
 import Modal from "../modal/modal";
 
 type avatarProps = {
-  src: string;
-  addNeeded: boolean;
+  src?: string;
+  addNeeded?: boolean;
+  onCrop?: (blob: Blob) => Promise<void> | void;
 };
 
-const Avatar = ({ src, addNeeded = true }: avatarProps) => {
+const Avatar = ({ src, addNeeded = true, onCrop }: avatarProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [image, setImage] = useState("");
   const [croppedImageData, setCroppedImg] = useState<string>("");
@@ -17,9 +18,21 @@ const Avatar = ({ src, addNeeded = true }: avatarProps) => {
   const handleImage = (e) => {
     const file = e.target.files[0];
     if (file) {
+      if (image && image.startsWith("blob:")) {
+        URL.revokeObjectURL(image);
+      }
       setImage(URL.createObjectURL(file));
       setOpenCropModal(true);
     }
+  };
+
+  const handleFile = (blob: Blob, preview: string) => {
+    console.log("lob is what", blob);
+    if (croppedImageData && croppedImageData.startsWith("blob:")) {
+      URL.revokeObjectURL(croppedImageData);
+    }
+    setCroppedImg(preview);
+    onCrop?.(blob);
   };
   const handleClick = () => {
     inputRef?.current?.click();
@@ -28,10 +41,10 @@ const Avatar = ({ src, addNeeded = true }: avatarProps) => {
     <div className="avatar-container">
       <img
         src={
-          src
-            ? src
-            : croppedImageData
-              ? croppedImageData
+          croppedImageData
+            ? croppedImageData
+            : src
+              ? src
               : "/assets/icons/logo.png"
         }
       />
@@ -55,7 +68,8 @@ const Avatar = ({ src, addNeeded = true }: avatarProps) => {
         >
           <CropperPart
             image={image}
-            croppedImage={setCroppedImg}
+            // croppedImage={setCroppedImg}
+            onCrop={handleFile}
             onClose={() => setOpenCropModal(false)}
           />
         </Modal>
