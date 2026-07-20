@@ -5,12 +5,12 @@ import {
   LazyChatWindow,
   LazyContactPage,
   LazyForgotPass,
+  LazyProfilePage,
   LazyResetPass,
 } from "./lazy-routes";
 import OneToOne from "../page/chat-module/one-to-one-chat/one-to-one";
 import LoginGuard from "../gaurds/login-gaurd";
 import AuthGaurd from "../gaurds/auth-gaurd";
-import ProfilePage from "../page/profile-page/profile-page";
 
 export const Routers = createBrowserRouter([
   {
@@ -37,7 +37,7 @@ export const Routers = createBrowserRouter([
       },
       {
         path: "profile",
-        element: <ProfilePage />,
+        element: <LazyProfilePage />,
       },
     ],
   },

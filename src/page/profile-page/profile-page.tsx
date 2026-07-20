@@ -4,15 +4,20 @@ import { profileData } from "./profile-constant/profile-constant";
 import "./profile-page.scss";
 import { ProfilePhotoUpload } from "./api/api";
 
-const ProfilePage = () => {
+interface ProfilePageProps {
+  value: string;
+  changeCB: (data: any) => void;
+}
+
+const ProfilePage = (props: ProfilePageProps) => {
   const uploadProfile = (blob: Blob) => {
-    console.log("blocb in maijn page", blob);
     const formData = new FormData();
-
     formData.append("profile", blob);
-    console.log("formdata", formData);
-
     uploadFile.mutate(formData);
+  };
+
+  const handleChangeScreen = (value: string) => {
+    props.changeCB(value);
   };
 
   const uploadFile = useMutation({
@@ -33,7 +38,11 @@ const ProfilePage = () => {
       </div>
       {profileData.map((itx: any, index: number) => {
         return (
-          <div className="profile-data-container" key={index}>
+          <div
+            className="profile-data-container"
+            key={index}
+            onClick={() => handleChangeScreen(itx.value)}
+          >
             <img src={itx.icon} />
             <div className="side-label-container">
               <div className="bold-text-medium-xxs">{itx.label}</div>

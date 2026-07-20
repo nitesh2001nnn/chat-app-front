@@ -14,4 +14,8 @@ export type formState = {
     remember?: { isChecked: boolean };
     passWord?: FieldState;
     confPassword?: FieldState;
+    about?: FieldState,
+    profileName?: FieldState,
+
+
 };

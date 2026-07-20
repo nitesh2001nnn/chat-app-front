@@ -32,7 +32,8 @@ const LazyResetPass = React.lazy(
 );
 
 const LazyProfilePage = React.lazy(
-  () => import("../page/profile-page/profile-page"),
+  () =>
+    import("../page/profile-page/switch-profile-screen/switch-profile-screen"),
 );
 
 export {
