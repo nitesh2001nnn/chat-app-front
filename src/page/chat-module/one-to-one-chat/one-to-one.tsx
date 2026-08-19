@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { API_CONFIG } from "../../shared/api-config/api-config";
 import { socket } from "../../../../socket";
 import { getLocalStorageObjDetails } from "../../shared/helper/helper";
+import Avatar from "../../../common-component/avatar/avatar";
 
 const OneToOne = () => {
   const navigate = useNavigate();
@@ -172,7 +173,12 @@ const OneToOne = () => {
                 handleNavigation(item);
               }}
             >
-              <div className="border-radius"></div>
+              <div className="border-radius">
+                <Avatar
+                  src={`${API_CONFIG.BaseUrl}/${item.profile_photo}`}
+                  addNeeded={false}
+                />
+              </div>
               <div className="message-section">
                 <div className="upper-text">
                   <span className="label-text bold-text-medium-xxs">

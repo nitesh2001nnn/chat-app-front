@@ -102,10 +102,10 @@ const Signup = ({ value, changeScreen }: signupProps) => {
     if (!isFormValid) return;
 
     const payload = {
-      email: formData.email.value,
-      phoneNumber: formData.phoneNumber.value,
-      password: formData.passWord.value,
-      fullName: formData.fullName.value,
+      email: formData?.email?.value,
+      phoneNumber: formData?.phoneNumber?.value,
+      password: formData?.passWord?.value,
+      fullName: formData?.fullName?.value,
     };
     console.log("paylaod", payload);
 

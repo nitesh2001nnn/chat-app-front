@@ -1,4 +1,5 @@
-export const createEditConfig = (
+export const 
+createEditConfig = (
     profile: any,
     handlers: {
         updateAbout: (value: string) => void;
@@ -15,7 +16,7 @@ export const createEditConfig = (
         stateName: "about",
         placeholder: "Enter about yourself!!"
     },
-    name: {
+    profileName: {
         title: "Name",
         limit: 30,
         buttonText: "Save Name",

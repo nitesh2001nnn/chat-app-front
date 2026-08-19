@@ -9,9 +9,9 @@ const SwitchProfileScreen = () => {
     data: {},
   });
 
-  const handleScreen = (val: string) => {
+  const handleScreen = (val: string, data: any) => {
     console.log("val is whag", val);
-    setScreenName({ name: val, data: {} });
+    setScreenName({ name: val, data });
   };
 
   useEffect(() => {
@@ -23,9 +23,13 @@ const SwitchProfileScreen = () => {
       <Switch test={screenName.name}>
         <ProfilePage
           value={"profile-photo"}
-          changeCB={(v: string) => handleScreen(v)}
+          changeCB={(v: string, data: any) => handleScreen(v, data)}
         />
-        <EditPage value={"edit-page"} changeCB={handleScreen} />
+        <EditPage
+          value={"edit-page"}
+          changeCB={handleScreen}
+          data={screenName?.data?.data?.[0]}
+        />
       </Switch>
     </div>
   );

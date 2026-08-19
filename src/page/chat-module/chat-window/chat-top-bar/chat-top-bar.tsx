@@ -11,7 +11,7 @@ const ChatTopBar = ({ name, profile_icon, active_status }: chatTopBarProps) => {
   return (
     <div className="chat-top-bar-window">
       <div className="avatar-name-container">
-        <Avatar src={profile_icon} />
+        <Avatar src={profile_icon} addNeeded={false} />
         <div className="name-container">
           <span className="bold-text-medium-xs">{name}</span>
           <span>{active_status}</span>

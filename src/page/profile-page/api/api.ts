@@ -7,3 +7,7 @@ export const ProfilePhotoUpload = async (payload: any) => {
     return res.data
 
 }
+export const profilePhotoDataFetching = async () => {
+    const res = await axiosInstance.get(`${API_CONFIG.BaseUrl}${API_CONFIG.PROFILE_PHOTO}`);
+    return res.data
+}

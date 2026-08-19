@@ -12,9 +12,10 @@ import { validator } from "../../chat-module/constants/one-to-one";
 interface EditPageProps {
   value: string;
   changeCB: (data: any) => void;
+  data: any;
 }
 
-const EditPage = ({ value, changeCB }: EditPageProps) => {
+const EditPage = ({ value, changeCB, data }: EditPageProps) => {
   const [modalViewName, setModalViewName] = useState<
     keyof typeof config | null
   >(null);
@@ -30,7 +31,20 @@ const EditPage = ({ value, changeCB }: EditPageProps) => {
     email: "",
   });
 
+  useEffect(() => {
+    if (!data) return;
+
+    setDisplayProfile({
+      about: data.bio,
+
+      profileName: data.fullName ?? "",
+
+      email: data.email ?? "",
+    });
+  }, [data]);
+
   const handleClick = (val: string) => {
+    console.log("item getting wht", val);
     setModalViewName(val);
   };
 
@@ -114,7 +128,7 @@ const EditPage = ({ value, changeCB }: EditPageProps) => {
           <div className="about-container">
             <span className="bold-text-medium-xs ">{itx.label}</span>
             <div className="about-txt-edit">
-              <div className="about-txt">{displayProfile[itx.key]}</div>
+              <div className="about-txt">{displayProfile?.[itx.key]}</div>
               <div className="edit-pencil" onClick={() => handleClick(itx.key)}>
                 <img src="/assets/icons/pencil.svg" />
               </div>
@@ -126,22 +140,22 @@ const EditPage = ({ value, changeCB }: EditPageProps) => {
       {modalViewName && (
         <Modal
           onClose={() => setModalViewName(null)}
-          title={activeConfig.title}
+          title={activeConfig?.title}
           isOverlayVisible={false}
         >
           <TextInput
-            value={profileData[activeConfig.stateName].value}
-            errorText={profileData[activeConfig.stateName].error}
-            placeholder={activeConfig.placeholder}
-            label={activeConfig.label}
+            value={profileData[activeConfig?.stateName]?.value}
+            errorText={profileData[activeConfig?.stateName]?.error}
+            placeholder={activeConfig?.placeholder}
+            label={activeConfig?.label}
             onChange={(e) =>
-              handleChange(e.target.value.trimStart(), activeConfig.stateName)
+              handleChange(e.target.value.trimStart(), activeConfig?.stateName)
             }
-            onBlur={() => handleBlur(activeConfig.stateName)}
+            onBlur={() => handleBlur(activeConfig?.stateName)}
           />
           <button
             className={`secondary-button ${
-              !profileData[activeConfig.stateName].isValid ? "disabled" : ""
+              !profileData[activeConfig?.stateName]?.isValid ? "disabled" : ""
             }`}
             onClick={handleSubmit}
           >
