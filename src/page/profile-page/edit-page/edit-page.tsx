@@ -9,13 +9,16 @@ import {
 import TextInput from "../../../common-component/inputs/text-input/text-input";
 import type { formState } from "../../shared/types/types";
 import { validator } from "../../chat-module/constants/one-to-one";
+import { useMutation } from "@tanstack/react-query";
+import { ProfileDetailsImport } from "../api/api";
 interface EditPageProps {
   value: string;
   changeCB: (data: any) => void;
   data: any;
+  onCBAPICALL: (item: any) => void;
 }
 
-const EditPage = ({ value, changeCB, data }: EditPageProps) => {
+const EditPage = ({ value, changeCB, data, onCBAPICALL }: EditPageProps) => {
   const [modalViewName, setModalViewName] = useState<
     keyof typeof config | null
   >(null);
@@ -64,13 +67,24 @@ const EditPage = ({ value, changeCB, data }: EditPageProps) => {
 
   const handleSubmit = () => {
     const stateName = activeConfig.stateName;
+    const value = profileData[stateName].value;
 
     setDisplayProfile((prev) => ({
       ...prev,
       [stateName]: profileData[stateName].value,
     }));
 
-    setModalViewName(null);
+    const fieldMap: any = {
+      profileName: "name",
+      about: "bio",
+      email: "email",
+    };
+
+    const backendField = fieldMap[stateName];
+
+    handleSubmitMutation.mutate({
+      [backendField]: value,
+    });
   };
 
   const handleBlur = (field: keyof formState) => {
@@ -111,6 +125,20 @@ const EditPage = ({ value, changeCB, data }: EditPageProps) => {
       };
     });
   };
+
+  const handleSubmitMutation = useMutation({
+    mutationKey: ["updateValue"],
+    mutationFn: (payload: any) => ProfileDetailsImport(payload),
+    onSuccess: (res: any) => {
+      console.log("res after success", res);
+      if (res.success) {
+        setModalViewName(null);
+      }
+    },
+    onError: (err: any) => {
+      console.error("error", err);
+    },
+  });
 
   useEffect(() => {
     console.log("formstate", profileData);

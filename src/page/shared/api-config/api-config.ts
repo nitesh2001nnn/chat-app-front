@@ -12,4 +12,5 @@ export const API_CONFIG = {
     PASSWORD_RESET: '/auth/api/reset-password',
     UPLOAD_PHOTO: '/auth/api/profile-photo',
     PROFILE_PHOTO: '/auth/api/user-details',
+    PROFILE_DETAILS: '/auth/api/profile-data',
 }
