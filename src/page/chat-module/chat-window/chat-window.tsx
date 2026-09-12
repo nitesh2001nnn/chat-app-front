@@ -1,43 +1,43 @@
-import { useLocation, useMatch, useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import ChatBottomBar from "./chat-bottom-bar/chat-bottom-bar";
 import ChatMiddleBar from "./chat-middle-bar/chat-middle-bar";
 import ChatTopBar from "./chat-top-bar/chat-top-bar";
+import ChatEmptyState from "./chat-empty-state/chat-empty-state";
 import "./chat-window.scss";
 import { useEffect, useRef, useState } from "react";
-
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "../../shared/interceptor/interceptor";
 import { socket } from "../../../../socket";
 import { getLocalStorageObjDetails } from "../../shared/helper/helper";
-import axios from "axios";
-import { API_CONFIG } from "../../shared/api-config/api-config";
 import { useAuth } from "../../../../auth-context";
 
 type messageType = {
   id: number;
   message_text: string;
+  incoming_msg?: string;
   sender_id: number;
+  status?: string;
+  isSeen?: number;
 };
 
-const ChatWindow = () => {
+interface ActiveChatWindowProps {
+  id: string;
+}
+
+const ActiveChatWindow = ({ id }: ActiveChatWindowProps) => {
   const { state } = useLocation();
-  const { id } = useParams();
   const { onlineUsers } = useAuth();
   const [value, setValue] = useState<string>("");
   const [messages, setMessages] = useState<messageType[]>([]);
   const [isTyping, setIsTyping] = useState(false);
-  const [profileData, setProfileData] = useState({});
-  const typingRef = useRef(null);
-  const userID = JSON.parse(getLocalStorageObjDetails("userData")).userID;
+  const typingRef = useRef<any>(null);
 
-  useEffect(() => {
-    console.log("state data inw indow tab", state);
-  }, [state]);
-
-  // Online status is now managed globally in AuthContext
+  const rawUserData = getLocalStorageObjDetails("userData");
+  const userID = rawUserData ? JSON.parse(rawUserData)?.userID : null;
 
   const handleMessage = () => {
-    console.log("chatid", id, "recieverId", state, "message", value);
+    if (!value.trim()) return;
+
     socket.emit("send_message", {
       chatId: id,
       recieverId: state?.other_user_id,
@@ -82,8 +82,6 @@ const ChatWindow = () => {
     }, 2000);
   };
 
-  console.log("state", state, messages, id);
-
   const fetchMessages = async () => {
     const res = await axiosInstance.get(
       `http://localhost:5000/auth/api/updated-messages/${id}`,
@@ -94,36 +92,36 @@ const ChatWindow = () => {
   const { data } = useQuery({
     queryKey: ["data", id],
     queryFn: fetchMessages,
+    enabled: !!id,
   });
-  console.log("data in messages", data);
 
   useEffect(() => {
-    if (data) {
+    if (data?.result) {
       setMessages(data.result);
-      socket.emit("seen_msg", {
-        chatId: id,
-        senderId: state?.other_user_id,
-      });
+      if (state?.other_user_id) {
+        socket.emit("seen_msg", {
+          chatId: id,
+          senderId: state.other_user_id,
+        });
+      }
     }
-  }, [data]);
-
-  // Removed useEffect on [id, messages] to prevent ping-pong loop
+  }, [data, id, state?.other_user_id]);
 
   useEffect(() => {
     const handleRecieverMessage = (msg: any) => {
-      console.log("waht type of message coming  here", msg);
       if (Number(msg.chatId) === Number(id)) {
         setMessages((prev) => [...prev, msg]);
-        socket.emit("seen_msg", {
-          chatId: id,
-          senderId: state?.other_user_id,
-        });
+        if (state?.other_user_id) {
+          socket.emit("seen_msg", {
+            chatId: id,
+            senderId: state.other_user_id,
+          });
+        }
       }
     };
 
     const handleMsgSeen = ({ chatId }: any) => {
-      console.log("chat coming or not", chatId);
-      if (Number(chatId) != Number(id)) return;
+      if (Number(chatId) !== Number(id)) return;
       setMessages((prev) =>
         prev.map((msg) =>
           msg.sender_id === userID
@@ -143,16 +141,12 @@ const ChatWindow = () => {
   }, [id, userID, state?.other_user_id]);
 
   useEffect(() => {
-    const handleTyping = ({ chatId, senderId }) => {
-      if (Number(chatId) !== Number(id)) {
-        return;
-      }
+    const handleTyping = ({ chatId }: any) => {
+      if (Number(chatId) !== Number(id)) return;
       setIsTyping(true);
     };
-    const handleStopTyping = ({ chatId, senderId }) => {
-      if (Number(chatId) !== Number(id)) {
-        return;
-      }
+    const handleStopTyping = ({ chatId }: any) => {
+      if (Number(chatId) !== Number(id)) return;
       setIsTyping(false);
     };
 
@@ -162,18 +156,12 @@ const ChatWindow = () => {
     return () => {
       socket.off("typing", handleTyping);
       socket.off("stop_typing", handleStopTyping);
+      if (typingRef.current) {
+        clearTimeout(typingRef.current);
+      }
     };
   }, [id]);
 
-  useEffect(() => {
-    console.log("istyping", isTyping);
-  }, [isTyping]);
-
-  console.log("messages", messages);
-
-  if (!id) {
-    return <div>No Chat option selected</div>;
-  }
   return (
     <div className="chat-window">
       <ChatTopBar
@@ -183,13 +171,13 @@ const ChatWindow = () => {
           isTyping
             ? "typing..."
             : onlineUsers.some(
-                  (id: any) => String(id) === String(state?.other_user_id),
+                  (uid: any) => String(uid) === String(state?.other_user_id),
                 )
               ? "online"
               : "offline"
         }
       />
-      <ChatMiddleBar value={messages} chatId={id} />
+      <ChatMiddleBar value={messages as any} chatId={Number(id)} />
       <ChatBottomBar
         onChange={handleInputChange}
         value={value}
@@ -197,6 +185,21 @@ const ChatWindow = () => {
       />
     </div>
   );
+};
+
+/**
+ * ChatWindow acts as the right-side pane coordinator.
+ * When an active chat ID is present in the route (:id), it renders the ActiveChatWindow.
+ * When no chat ID is present (e.g. on /contact or /chats empty state), it renders the ChatEmptyState fallback view.
+ */
+const ChatWindow = () => {
+  const { id } = useParams();
+
+  if (!id) {
+    return <ChatEmptyState />;
+  }
+
+  return <ActiveChatWindow key={id} id={id} />;
 };
 
 export default ChatWindow;

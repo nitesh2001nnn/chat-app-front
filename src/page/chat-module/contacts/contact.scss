@@ -1,18 +1,70 @@
-.contact-container{
+.contact-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-y: auto;
+  flex: 1;
+  padding: 10px 8px;
+
+  .contact-list-container {
     display: flex;
-    flex-direction:column;
+    align-items: center;
     gap: 16px;
-    
-    
-    .contact-list-container{
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        cursor: pointer;
-        padding: 4px 10px;
-        &:hover{
-            background-color: var(--grey-65);
-            color: var(--btn-color);
-        }
+    cursor: pointer;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+
+    .msg-btn {
+      padding: 4px 12px;
+      background-color: var(--feedback-success-50);
+      border-radius: 8px;
+      color: var(--btn-color);
     }
+    .invite-btn {
+      padding: 4px 12px;
+      background-color: var(--gray-80);
+
+      border-radius: 8px;
+      color: var(--blue);
+      border: 1px solid var(--blue);
+    }
+
+    .avatar-name-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .avatar-container {
+      width: 46px;
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      background-color: var(--grey-40);
+    }
+
+    .name-bio-container {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      overflow: hidden;
+
+      span:first-child {
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--grey-100);
+      }
+
+      span:last-child {
+        font-size: 12px;
+        color: var(--grey-65);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
 }

@@ -1,8 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import "./contact.scss";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchContacts, getOrCreateChat } from "../add-contacts/api/add-contact-services";
+import {
+  fetchContacts,
+  getOrCreateChat,
+} from "../add-contacts/api/add-contact-services";
 import { useEffect } from "react";
+import Avatar from "../../../common-component/avatar/avatar";
 
 const Contacts = () => {
   const navigate = useNavigate();
@@ -50,8 +54,21 @@ const Contacts = () => {
             className="contact-list-container"
             onClick={() => handleContactClick(item)}
           >
-            <img src={item.profileIcon} />
-            <span>{item.contact_name}</span>
+            <div className="avatar-name-container">
+              <Avatar addNeeded={false} />
+              <div className="name-bio-container">
+                <span>{item.contact_name}</span>
+                <span>{item.bio || "hey"}</span>
+              </div>
+            </div>
+
+            <div>
+              {item.isRegistered == 1 ? (
+                <div className="msg-btn">Message</div>
+              ) : (
+                <div className="invite-btn">Invite</div>
+              )}
+            </div>
           </div>
         );
       })}
@@ -60,4 +77,3 @@ const Contacts = () => {
 };
 
 export default Contacts;
-
