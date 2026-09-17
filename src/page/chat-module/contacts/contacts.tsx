@@ -7,6 +7,7 @@ import {
 } from "../add-contacts/api/add-contact-services";
 import { useEffect } from "react";
 import Avatar from "../../../common-component/avatar/avatar";
+import { API_CONFIG } from "../../shared/api-config/api-config";
 
 const Contacts = () => {
   const navigate = useNavigate();
@@ -55,7 +56,14 @@ const Contacts = () => {
             onClick={() => handleContactClick(item)}
           >
             <div className="avatar-name-container">
-              <Avatar addNeeded={false} />
+              <Avatar
+                src={
+                  item.profile_photo
+                    ? `${API_CONFIG.BaseUrl}/${item.profile_photo}`
+                    : undefined
+                }
+                addNeeded={false}
+              />
               <div className="name-bio-container">
                 <span>{item.contact_name}</span>
                 <span>{item.bio || "hey"}</span>

@@ -1,10 +1,12 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Avatar from "../../common-component/avatar/avatar";
 import { profileData } from "./profile-constant/profile-constant";
 import "./profile-page.scss";
 import { profilePhotoDataFetching, ProfilePhotoUpload } from "./api/api";
 import { useEffect } from "react";
 import { API_CONFIG } from "../shared/api-config/api-config";
+import { useGlobalContext } from "../../global/hooks/useGlobalContext";
+import { getProfileImageUrl } from "../shared/helper/helper";
 
 interface ProfilePageProps {
   value: string;
@@ -12,6 +14,10 @@ interface ProfilePageProps {
 }
 
 const ProfilePage = (props: ProfilePageProps) => {
+  const queryClient = useQueryClient();
+
+  const { setProfileData, refreshProfileData } = useGlobalContext();
+
   const uploadProfile = (blob: Blob) => {
     const formData = new FormData();
     formData.append("profile", blob, "profile.jpg");
@@ -28,6 +34,8 @@ const ProfilePage = (props: ProfilePageProps) => {
     mutationFn: ProfilePhotoUpload,
     onSuccess: (res: any) => {
       console.log("res getting what", res);
+      queryClient.invalidateQueries({ queryKey: ["fetch-profile-data"] });
+      refreshProfileData?.();
     },
   });
 
@@ -36,18 +44,34 @@ const ProfilePage = (props: ProfilePageProps) => {
     queryFn: profilePhotoDataFetching,
   });
 
+  // Safely extract user object whether backend returns array or object
+  const userProfile = Array.isArray(profileDataFetch?.data)
+    ? profileDataFetch.data[0]
+    : profileDataFetch?.data || profileDataFetch?.result?.[0] || profileDataFetch?.result;
+
+  const rawPhoto = userProfile?.profile_photo || userProfile?.profilePhoto;
+  const avatarSrc = getProfileImageUrl(rawPhoto);
+  const displayName = userProfile?.fullName || userProfile?.name || userProfile?.display_name || "Profile";
+
   useEffect(() => {
-    console.log("res for profile photo", profileDataFetch);
-  }, [profileDataFetch]);
+    if (profileDataFetch) {
+      setProfileData(profileDataFetch);
+    }
+  }, [profileDataFetch, setProfileData]);
+
+  useEffect(() => {
+    console.log("res for profile photo", profileDataFetch, "resolved avatarSrc:", avatarSrc);
+  }, [profileDataFetch, avatarSrc]);
+
   return (
     <div className="profile-page-container">
-      <div className="main-text bold-text-medium">Nitesh Nimje</div>
+      <div className="main-text bold-text-medium">{displayName}</div>
 
       <div className="avatar-place">
         <div className="avatar-center">
           <Avatar
             onCrop={uploadProfile}
-            src={`${API_CONFIG.BaseUrl}/${profileDataFetch?.data?.[0]?.profile_photo}`}
+            src={avatarSrc}
           />
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./avatar.scss";
 import CropperPart from "../cropper/cropper";
 import Modal from "../modal/modal";
@@ -15,15 +15,19 @@ const Avatar = ({ src, addNeeded = true, onCrop }: avatarProps) => {
   const [croppedImageData, setCroppedImg] = useState<string>("");
   const [openCropperModal, setOpenCropModal] = useState<boolean>(false);
 
-  const handleImage = (e) => {
-    const file = e.target.files[0];
+  const handleImage = (e: any) => {
+    const file = e.target.files?.[0];
     if (file) {
-      if (image && image.startsWith("blob:")) {
-        URL.revokeObjectURL(image);
-      }
-      setImage(URL.createObjectURL(file));
-      setOpenCropModal(true);
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (typeof reader.result === "string") {
+          setImage(reader.result);
+          setOpenCropModal(true);
+        }
+      };
+      reader.readAsDataURL(file);
     }
+    e.target.value = "";
   };
 
   const handleFile = (blob: Blob, preview: string) => {
@@ -37,16 +41,25 @@ const Avatar = ({ src, addNeeded = true, onCrop }: avatarProps) => {
   const handleClick = () => {
     inputRef?.current?.click();
   };
+  const [hasError, setHasError] = useState(false);
+
+  // Reset error state whenever src changes so new/loaded images can display
+  useEffect(() => {
+    setHasError(false);
+  }, [src]);
+
   return (
     <div className="avatar-container">
       <img
         src={
           croppedImageData
             ? croppedImageData
-            : src
+            : !hasError && src
               ? src
-              : "/assets/icons/logo.png"
+              : "/assets/icons/Avatar.svg"
         }
+        onError={() => setHasError(true)}
+        alt="avatar"
       />
       {addNeeded && (
         <div className="add-btn">
@@ -62,15 +75,20 @@ const Avatar = ({ src, addNeeded = true, onCrop }: avatarProps) => {
       )}
       {image && openCropperModal && (
         <Modal
-          onClose={() => setOpenCropModal(false)}
+          onClose={() => {
+            setOpenCropModal(false);
+            setImage("");
+          }}
           title={"Crop Image"}
-          isOverlayVisible={false}
+          isOverlayVisible={true}
         >
           <CropperPart
             image={image}
-            // croppedImage={setCroppedImg}
             onCrop={handleFile}
-            onClose={() => setOpenCropModal(false)}
+            onClose={() => {
+              setOpenCropModal(false);
+              setImage("");
+            }}
           />
         </Modal>
       )}
