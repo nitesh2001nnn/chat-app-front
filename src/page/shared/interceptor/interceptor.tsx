@@ -34,7 +34,9 @@ axiosInstance.interceptors.response.use(
   },
   async function (error) {
     if (error?.response?.status === 401 || error?.response?.status == 419) {
-      return Promise.reject(error);
+      localStorage.removeItem("userData");
+
+      window.location.href = "/login";
     }
   },
 );

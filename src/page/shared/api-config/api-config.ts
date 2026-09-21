@@ -3,6 +3,7 @@ export const API_CONFIG = {
     SIGNUP: '/auth/api/signup',
     VERIFY_OTP: "/auth/api/verify-otp",
     RESEND_OTP: "/auth/api/resend-otp",
+    LOGOUT: "/auth/api/logout",
     BaseUrl: "http://localhost:5000",
     UPDATESEENMSG: "/auth/api/seen-check",
     FETCH_CONTACTS: '/auth/api/fetch-contacts',

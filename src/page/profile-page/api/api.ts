@@ -16,3 +16,8 @@ export const ProfileDetailsImport = async (payload: any) => {
     const res = await axiosInstance.post(`${API_CONFIG.BaseUrl}${API_CONFIG.PROFILE_DETAILS}`, payload);
     return res.data;
 }
+
+export const logoutApi = async () => {
+    const res = await axiosInstance.post(`${API_CONFIG.BaseUrl}${API_CONFIG.LOGOUT}`);
+    return res.data;
+}
