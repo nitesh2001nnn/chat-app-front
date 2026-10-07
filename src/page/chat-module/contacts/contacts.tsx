@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import "./contact.scss";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   fetchContacts,
   getOrCreateChat,
@@ -8,6 +8,7 @@ import {
 import { useEffect } from "react";
 import Avatar from "../../../common-component/avatar/avatar";
 import { API_CONFIG } from "../../shared/api-config/api-config";
+import { SENDiNVITATION } from "./api/contact-service";
 
 const Contacts = () => {
   const navigate = useNavigate();
@@ -17,15 +18,31 @@ const Contacts = () => {
     queryFn: fetchContacts,
   });
 
+  const sendInvitationMutation = useMutation({
+    mutationKey: ["send-invitation"],
+    mutationFn: (payload: any) => SENDiNVITATION(payload),
+    onSuccess: (res: any) => {
+      console.log("on success", res);
+    },
+    onError: (err: any) => {
+      console.error("on error", err);
+    },
+  });
+
+  const handleInvitation = (info: any) => {
+    console.log("information about chat", info);
+    const payload = {
+      email: info.contact_email,
+      inviterName: info.contact_name,
+    };
+    sendInvitationMutation.mutate(payload);
+  };
+
   useEffect(() => {
     console.log("userdata", data);
   }, [data]);
 
   const handleContactClick = async (item: any) => {
-    if (!item.linked_user_id) {
-      alert("This contact is not a registered user on Chat App yet.");
-      return;
-    }
     try {
       const res = await getOrCreateChat(item.linked_user_id);
       if (res.success && res.chatId) {
@@ -50,11 +67,7 @@ const Contacts = () => {
       {data?.map((item: any, index: number) => {
         console.log("data in contacts", item);
         return (
-          <div
-            key={item.id || index}
-            className="contact-list-container"
-            onClick={() => handleContactClick(item)}
-          >
+          <div key={item.id || index} className="contact-list-container">
             <div className="avatar-name-container">
               <Avatar
                 src={
@@ -72,9 +85,19 @@ const Contacts = () => {
 
             <div>
               {item.isRegistered == 1 ? (
-                <div className="msg-btn">Message</div>
+                <div
+                  className="msg-btn"
+                  onClick={() => handleContactClick(item)}
+                >
+                  Message
+                </div>
               ) : (
-                <div className="invite-btn">Invite</div>
+                <div
+                  className="invite-btn"
+                  onClick={() => handleInvitation(item)}
+                >
+                  Invite
+                </div>
               )}
             </div>
           </div>

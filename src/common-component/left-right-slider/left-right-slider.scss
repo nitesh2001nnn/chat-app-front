@@ -1,0 +1,22 @@
+.left-right-slider-container {
+  width: 100%;
+  background-color: var(--dark-blue);
+
+  .left-right-element-parent-container {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    .element-part {
+      padding: 8px 12px;
+
+      cursor: pointer;
+
+      img {
+        width: 35px;
+      }
+      &:hover {
+        background-color: var(--grey-50);
+      }
+    }
+  }
+}

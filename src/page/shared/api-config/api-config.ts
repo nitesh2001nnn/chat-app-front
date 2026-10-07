@@ -8,6 +8,7 @@ export const API_CONFIG = {
     UPDATESEENMSG: "/auth/api/seen-check",
     FETCH_CONTACTS: '/auth/api/fetch-contacts',
     ADD_CONTACT: '/auth/api/add-contact',
+    SEND_INVITATION: '/auth/api/send-invite',
     GET_OR_CREATE_CHAT: '/auth/api/get-or-create-chat',
     PASSWORD_GEN_TOKEN: '/auth/api/forgot-password-token',
     PASSWORD_RESET: '/auth/api/reset-password',

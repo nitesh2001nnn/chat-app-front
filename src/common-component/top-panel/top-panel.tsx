@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "../modal/modal";
 import "./top-panel.scss";
 import AddContacts from "../../page/chat-module/add-contacts/add-contacts";
@@ -11,6 +11,7 @@ type headerPanelProps = {
 const TopPanel = ({ pathName }: headerPanelProps) => {
   const config = headerConfig[pathName];
   const [openModal, setOpenModal] = useState(false);
+  
   const handleModal = () => {
     setOpenModal(true);
   };
